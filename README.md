@@ -1,14 +1,18 @@
-# Jetpack - Development Environment Quickstarts
+# Jetpack - Development Quickstarts
 
-## Why?
+Certain tasks like setting up development infrastructure or bootstrapping a development environment quickly can be a challenge, guides about them can help in streamlining the process.
 
-...
+- [Jetpack - Development Quickstarts](#jetpack---development-quickstarts)
+  - [Docker-Compose + Go (Routing with Gin) + React (TypeScript)](#docker-compose--go-routing-with-gin--react-typescript)
+    - [Go-React-TypeScript Files](#go-react-typescript-files)
+      - [`docker-compose.yml`](#docker-composeyml)
+      - [`dockerfile`](#dockerfile)
+      - [`back-end/dockerfile`](#back-enddockerfile)
+    - [Finishing Thoughts](#finishing-thoughts)
 
-## Jetpacks
+## Docker-Compose + Go (Routing with Gin) + React (TypeScript)
 
-### Docker-Compose + Go (Routing with Gin) + React (TypeScript)
-
-First thing you are going to need to do is install Create-React-App (note you need version 2.1.0 or higher):
+First thing you are going to need to do is install Create-React-App:
 
 ```bash
 $ npm install -g create-react-app
@@ -36,24 +40,118 @@ We suggest that you begin by typing:
 Happy hacking!
 ```
 
-Add in the files from the repo (`https://github.com/the-rileyj/Jetpacks`) in `./Go-React-TypeScript` into the root of your project directory, then adjust the following variables in the files as described in the following sections; these adjustments are the minimal nessesary for you to get up and going, any other changes are up to you.
+Add in the files (with the same directory structure as in the repo) from the Jetpacks [repo](https://github.com/the-rileyj/Jetpacks) in `./Go-React-TypeScript` into the root of your project directory. You will then need to install [github.com/gin-gonic/gin](github.com/gin-gonic/gin) and [github.com/the-rileyj/serverutils](github.com/the-rileyj/serverutils) via `go get`.
+
+[github.com/the-rileyj/serverutils](github.com/the-rileyj/serverutils) is a package I wrote, it is a small collection of server utilities (password hashing, generating UUIDs, etc), route handlers, and middleware. It is fairly easy to read and comprehend, and though this package is largely geared toward my own needs, I'm always accepting pull requests if there is something you find broken or missing.
+
+Adjust the following variables in the files as described in the following sections; these adjustments are the most minimal nessesary for you to get up and going, any other changes are up to you.
 
 ***Note*** - If you are testing building the environment locally after developing and already have all of the front-end dependencies, you can speed up the build time significantly by adding in a `COPY` directive which copies the `node_modules` directory into the `Front-End-Builder` build context (before the `RUN npm install` line) in the dockerfile that is in the root of the project after copying over the files in `./Go-React-TypeScript`. If you do this, you need to remove the `node_modules/` line from the `.dockerignore` file
 
-#### docker-compose.yml
+### Go-React-TypeScript Files
 
-Under the `api-server`, `file-server`, and `networks` directive, the network is currently called "PROJECT-network", change all of them to whatever you want, so long as they are all the same.
+#### `docker-compose.yml`
 
-#### dockerfile
+Note, if you intend for this project to be standalone, as in it won't connect to any other services via a docker network, you can simply remove the top-level network directive and the network attributes for each of the services. Under the `api-server`, `file-server`, and `networks` directive, the "internal" network (the network used by the services in the `docker-compose.yml` file via the `networks` top-level-directive, used in tandem with the "name" field, roughly associates that network name with an external-network docker network, in this case named "PROJECT-network-external) is currently called "PROJECT-network-internal", change all occurances in the file to whatever you want, so long as they are all the same. Then change the "external" network "PROJECT-network-external" to the name of the docker network you want to connect to.
 
-At the very end of the file, the lines which would copy the certificate and secret file into the container are commented out. Remove the lines if you aren't going to need HTTPS, or change the source copy paths to where your certificates are located.
+The `networks` top-level-directive (in the `docker-compose.yml` file):
 
-#### back-end/dockerfile
+```yml
+networks:
+  PROJECT-network-internal:
+    name: PROJECT-network-external
+```
 
-Under the first build context called `API-Builder`, the first `WORKDIR` directive is changes to `/go/src/github.com/the-rileyj/PROJECT/`, you will want to change `PROJECT` to the name of where your project resides in the `~/go/src/github.com/the-rileyj/` directory on your host machine or change the path to suit your needs.
+The `file-server` service (in the `docker-compose.yml` file):
 
-Additionally, in the last build context of the dockerfile, the first non-commented line starting immediately after the `FROM scratch` line should have its copy source changed from `/go/src/github.com/the-rileyj/PROJECT/` to whatever you changed the `WORKDIR` destination to in the `API-Builder` build context.
+```yml
+  ...
 
-#### Finishing Thoughts
+  file-server:
+    build: .
+    expose:
+      - "80"
+    networks:
+      - PROJECT-network-internal
+    restart: always
+
+  ...
+```
+
+#### `dockerfile`
+
+Right after the second build stage (named `File-Server-Builder`), the `WORKDIR` is set to change into `/go/src/github.com/the-rileyj/PROJECT/`, change `PROJECT` and `the-rileyj` to your project name and github name (it should end up looking very similar to the path of your project on your development machine) or change the path to suit your needs, then do the same thing shortly after the last build stage (after the `FROM scratch` line). Note that there isn't any copying of TLS certificates or secrets, so if you are planning to use HTTPS make sure to place them in the container.
+
+Right after the second build stage (in the `dockerfile`):
+
+```dockerfile
+...
+# Add ca-certificates to get the proper certs for making requests,
+# gcc and musl-dev for any cgo dependencies, and
+# git for getting dependencies residing on github
+RUN apk update && \
+    apk add --no-cache ca-certificates gcc git musl-dev
+
+WORKDIR /go/src/github.com/the-rileyj/PROJECT/
+
+COPY ./back-end/file-server/file-server.go .
+...
+```
+
+After the last build stage (in the `dockerfile`):
+
+```dockerfile
+...
+# Last stage of build, adding in files and running
+# newly compiled webserver
+FROM scratch
+
+# Copy the built files into the file-server container
+COPY --from=Front-End-Builder /build /static
+
+# Copy the Go program compiled in the second stage
+COPY --from=File-Server-Builder /go/src/github.com/the-rileyj/PROJECT/ /
+
+...
+```
+
+#### `back-end/dockerfile`
+
+Under the first build context called `API-Builder`, the first `WORKDIR` directive is set to change into `/go/src/github.com/the-rileyj/PROJECT/` change `PROJECT` and `the-rileyj` to your project name and github name (it should end up looking very similar to the path of your project on your development machine) or change the path to suit your needs; then in the last build context of the dockerfile, the first non-commented line starting immediately after the line with the `FROM scratch` directive should have its copy source changed from `/go/src/github.com/the-rileyj/PROJECT/` to whatever you changed the `WORKDIR` destination to in the `API-Builder` build context.
+
+Under the first build context (found in the `dockerfile`):
+
+```dockerfile
+...
+
+FROM golang:1.11.3-alpine3.8 AS API-Builder
+
+# Add ca-certificates to get the proper certs for making requests,
+# gcc and musl-dev for any cgo dependencies, and
+# git for getting dependencies residing on github
+RUN apk update && \
+    apk add --no-cache ca-certificates gcc git musl-dev
+
+WORKDIR /go/src/github.com/the-rileyj/PROJECT/
+
+...
+```
+
+Immediately after the line with the `FROM scratch` directive (found in the `dockerfile`):
+
+```dockerfile
+...
+
+# Last stage of build, adding in files and running
+# newly compiled webserver
+FROM scratch
+
+# Copy the Go program compiled in the second stage
+COPY --from=API-Builder /go/src/github.com/the-rileyj/PROJECT/ /
+
+...
+```
+
+### Finishing Thoughts
 
 ...

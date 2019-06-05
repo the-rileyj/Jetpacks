@@ -6,17 +6,17 @@ services:
     expose:
       - "80"
     networks:
-      - PROJECT-network
+      - PROJECT-network-internal
     restart: always
 
   file-server:
     build: .
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     networks:
-      - PROJECT-network
+      - PROJECT-network-internal
     restart: always
 
 networks:
-  PROJECT-network:
-    name: PROJECT-network
+  PROJECT-network-internal:
+    name: PROJECT-network-external
