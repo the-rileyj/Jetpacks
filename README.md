@@ -158,4 +158,4 @@ COPY --from=API-Builder /go/src/github.com/the-rileyj/PROJECT/ /
 
 ### Finishing Thoughts
 
-...
+If you are using go modules, make sure to copy over your dependency files and install prior to copying over your Go file (to make the most use of caching the installs). Best of luck, hack away!
