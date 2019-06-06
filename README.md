@@ -3,12 +3,15 @@
 Certain tasks like setting up development infrastructure or bootstrapping a development environment quickly can be a challenge, guides about them can help in streamlining the process.
 
 - [Jetpack - Development Quickstarts](#jetpack---development-quickstarts)
+  - [Jetpacks](#jetpacks)
   - [Docker-Compose + Go (Routing with Gin) + React (TypeScript)](#docker-compose--go-routing-with-gin--react-typescript)
     - [Go-React-TypeScript Files](#go-react-typescript-files)
       - [`docker-compose.yml`](#docker-composeyml)
       - [`dockerfile`](#dockerfile)
       - [`back-end/dockerfile`](#back-enddockerfile)
     - [Finishing Thoughts](#finishing-thoughts)
+
+## Jetpacks
 
 ## Docker-Compose + Go (Routing with Gin) + React (TypeScript)
 
@@ -38,6 +41,7 @@ We suggest that you begin by typing:
   npm start
 
 Happy hacking!
+
 ```
 
 Add in the files (with the same directory structure as in the repo) from the Jetpacks [repo](https://github.com/the-rileyj/Jetpacks) in `./Go-React-TypeScript` into the root of your project directory. You will then need to install [github.com/gin-gonic/gin](github.com/gin-gonic/gin) and [github.com/the-rileyj/serverutils](github.com/the-rileyj/serverutils) via `go get`.
