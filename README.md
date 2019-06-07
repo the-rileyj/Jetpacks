@@ -4,16 +4,42 @@ Certain tasks like setting up development infrastructure or bootstrapping a deve
 
 - [Jetpack - Development Quickstarts](#jetpack---development-quickstarts)
   - [Jetpacks](#jetpacks)
+  - [Docker-Compose + Flask (Python 3.6) + React (TypeScript)](#docker-compose--flask-python-36--react-typescript)
+    - [Overview](#overview)
+    - [Guide](#guide)
+    - [Finishing Thoughts](#finishing-thoughts)
   - [Docker-Compose + Go (Routing with Gin) + React (TypeScript)](#docker-compose--go-routing-with-gin--react-typescript)
+    - [Overview](#overview-1)
+    - [Guide](#guide-1)
     - [Go-React-TypeScript Files](#go-react-typescript-files)
       - [`docker-compose.yml`](#docker-composeyml)
       - [`dockerfile`](#dockerfile)
       - [`back-end/dockerfile`](#back-enddockerfile)
-    - [Finishing Thoughts](#finishing-thoughts)
+    - [Finishing Thoughts](#finishing-thoughts-1)
 
 ## Jetpacks
 
+## Docker-Compose + Flask (Python 3.6) + React (TypeScript)
+
+### Overview
+
+The end product is a Flask app that serves a React files and handles API requests. It will be deployable by either docker-compose building locally, or via being built as an image and then handling through a container orchestrator such as Kubernetes. Note, that this is not a "production ready" template due to the tight coupling of the API-Server and File-Server through the Flask app, though this would scale, a much more effective route towards the same solution would likely involve a static file server which also reverse proxies API requests to the Flask Back-End, allowing for independent scaling of the Front-End and Back-End.
+
+### Guide
+
+...
+
+### Finishing Thoughts
+
+...
+
 ## Docker-Compose + Go (Routing with Gin) + React (TypeScript)
+
+### Overview
+
+The end product is a composition of two Go web applications: one that serves strictly API requests and another which handles both file serving and proxying requests to the aforementioned API server. It will be deployable by either docker-compose building locally, or via both applications being built into images and then handling through a container orchestrator such as Kubernetes. The API-Server and File-Server are not tightly coupled, as a result this would scale effectively on it's own, though you could very well make adjustments to suite it more towards your liking.
+
+### Guide
 
 First thing you are going to need to do is install Create-React-App:
 
