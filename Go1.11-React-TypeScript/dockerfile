@@ -1,7 +1,7 @@
 FROM node:10.15.1-alpine AS Front-End-Builder
 
 # Copy the files needed for dependency management
-COPY .npmrc package-lock.json package.json ./
+COPY package-lock.json package.json ./
 
 # Install the needed dependencies for the front-end
 RUN npm install
