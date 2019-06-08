@@ -11,7 +11,7 @@ COPY ./src ./src
 COPY ./public ./public
 
 # Copy files for build criteria into the container
-COPY .env tsconfig.json ./
+COPY tsconfig.json ./
 
 # Build the typescript react project into the
 # CSS, HTML, and JavaScript and bundle the assets
