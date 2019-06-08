@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/the-rileyj/serverutils"
+	serverutils "github.com/the-rileyj/server-utils"
 )
 
 func main() {

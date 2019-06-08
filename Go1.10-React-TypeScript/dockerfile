@@ -44,7 +44,7 @@ FROM scratch
 COPY --from=Front-End-Builder /build /static
 
 # Copy the Go program compiled in the second stage
-COPY --from=File-Server-Builder /go/src/github.com/the-rileyj/PROJECT/ /
+COPY --from=File-Server-Builder /go/src/github.com/the-rileyj/PROJECT/file-server /
 
 # Add HTTPS Certificates for making HTTP requests from the webserver
 COPY --from=File-Server-Builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

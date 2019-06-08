@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/the-rileyj/serverutils"
+	serverutils "github.com/the-rileyj/server-utils"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 		router.Use(serverutils.HandleCrossOriginResourceSharing)
 	}
 
-	router.Any("/api/*path", serverutils.HandleRouteProxying)
+	router.Any("/api/*path", serverutils.HandleRouteProxying("http://api-server"))
 
 	router.GET("/hello-world", func(c *gin.Context) { c.Writer.Write([]byte("HELLO WORLD!")) })
 
