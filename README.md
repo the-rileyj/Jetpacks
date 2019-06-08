@@ -190,6 +190,10 @@ COPY --from=API-Builder /go/src/github.com/the-rileyj/PROJECT/ /
 
 ### Finishing Thoughts
 
+Run `npm run start` in your terminal to start the development server for your React App.
+
+When you are ready to connect it to your API, you can build your container with `docker build -t my-app-api:latest`, then run with `docker run --rm -p 8888:80 my-app-api:latest` and use `http://127.0.0.1:8888` as the host for making request to your API from your React app. Note, that before you make it live on the internet, you are going to want to have some sort of mechanism for swapping your API url to where it is hosted, ex. changing it from `http://127.0.0.1:8888` to `http://your-website.com/whatever`.
+
 Best of luck, hack away!
 
 
@@ -295,5 +299,9 @@ The `file-server` service (in the `docker-compose.yml` file):
 ```
 
 ### Finishing Thoughts
+
+Run `npm run start` in your terminal to start the development server for your React App.
+
+When you are ready to connect it to your API, you can build your container with `docker build -t my-app-api:latest`, then run with `docker run --rm -p 8888:80 my-app-api:latest` and use `http://127.0.0.1:8888` as the host for making request to your API from your React app. Note, that before you make it live on the internet, you are going to want to have some sort of mechanism for swapping your API url to where it is hosted, ex. changing it from `http://127.0.0.1:8888` to `http://your-website.com/whatever`.
 
 Best of luck, hack away!
