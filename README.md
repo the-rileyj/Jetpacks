@@ -29,11 +29,38 @@ Certain tasks like setting up development infrastructure or bootstrapping a deve
 
 ### Overview
 
-The end product is a Flask app that serves a React files and handles API requests. It will be deployable by either docker-compose building locally, or via being built as an image and then handling through a container orchestrator such as Kubernetes. Note, that this is not a "production ready" template due to the tight coupling of the API-Server and File-Server through the Flask app, though this would scale, a much more effective route towards the same solution would likely involve a static file server which also reverse proxies API requests to the Flask Back-End, allowing for independent scaling of the Front-End and Back-End.
+The end product is a Flask app that serves the React files and handles API requests. It will be deployable by either docker-compose building locally, or via being built as an image and then handling through a container orchestrator such as Kubernetes. Note, that this is not a "production ready" template due to the tight coupling of the API-Server and File-Server through the Flask app, though this would scale, a much more effective route towards the same solution would likely involve a static file server which also reverse proxies API requests to the Flask Back-End, allowing for independent scaling of the Front-End and Back-End.
 
 ### Guide
 
+First thing you are going to need to do is install Create-React-App:
+
+```bash
+$ npm install -g create-react-app
++ create-react-app@3.0.1
+added 32 packages from 28 contributors, removed 4 packages and updated 11 packages in 90.445s
+```
+
+Then run Create-React-App with the flag for TypeScript to create the boilerplate in a new directory for your react project (note, npx is included in npm with npm 5.2+ and higher, [see these instructions for help with older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f)):
+
+```bash
+$ npx create-react-app my-app --typescript
+
+Creating a new React app in ~/my-app.
+
+Installing packages. This might take a couple of minutes.
+Installing react, react-dom, and react-scripts...
+
 ...
+
+We suggest that you begin by typing:
+
+  cd my-app
+  npm start
+
+Happy hacking!
+
+```
 
 ### Finishing Thoughts
 
